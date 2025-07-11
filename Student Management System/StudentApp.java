@@ -18,25 +18,21 @@ public class StudentApp extends JFrame {
         sms = new StudentManagementSystem();
         setTitle("Simple Student Management System");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window
+        setLocationRelativeTo(null); 
 
         initComponents();
-        refreshStudentTable(); // Populate table on startup
+        refreshStudentTable(); 
 
-        // This is crucial: pack() sizes the frame to fit its components
-        // setVisible(true) makes the frame appear
-        pack(); // Adjusts frame size based on preferred sizes of its components
+        pack(); 
         setVisible(true);
     }
 
     private void initComponents() {
-        // Use a JPanel for the main content to better organize sub-panels
         JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(10, 10)); // Outer layout with gaps
-        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Padding around the edges
+        mainPanel.setLayout(new BorderLayout(10, 10)); 
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
 
-        // --- Input Panel ---
-        JPanel inputPanel = new JPanel(new GridLayout(4, 2, 5, 5)); // 4 rows for 4 fields
+        JPanel inputPanel = new JPanel(new GridLayout(4, 2, 5, 5)); 
         inputPanel.setBorder(BorderFactory.createTitledBorder("Student Details"));
 
         nameField = new JTextField(20);
@@ -53,13 +49,12 @@ public class StudentApp extends JFrame {
         inputPanel.add(new JLabel("Contact Number:"));
         inputPanel.add(contactField);
 
-        // --- Button Panel ---
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10)); // Center buttons with gaps
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
         JButton addButton = new JButton("Add Student");
         JButton searchButton = new JButton("Search Student");
         JButton updateButton = new JButton("Update Student");
         JButton removeButton = new JButton("Remove Student");
-        JButton displayAllButton = new JButton("Display All"); // This button will explicitly refresh the table
+        JButton displayAllButton = new JButton("Display All"); 
 
         buttonPanel.add(addButton);
         buttonPanel.add(searchButton);
@@ -67,36 +62,31 @@ public class StudentApp extends JFrame {
         buttonPanel.add(removeButton);
         buttonPanel.add(displayAllButton);
 
-        // --- Display Area (Table) ---
         String[] columnNames = {"Name", "Roll Number", "Grade", "Contact Number"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                // Make table cells non-editable by default
                 return false;
             }
         };
         studentTable = new JTable(tableModel);
-        studentTable.setFillsViewportHeight(true); // Table fills the height of the scrollpane
-        JScrollPane scrollPane = new JScrollPane(studentTable); // Make table scrollable
-        scrollPane.setPreferredSize(new Dimension(750, 250)); // Give the table a preferred size
+        studentTable.setFillsViewportHeight(true); 
+        JScrollPane scrollPane = new JScrollPane(studentTable); 
+        scrollPane.setPreferredSize(new Dimension(750, 250));
 
-        // --- Action Listeners for Buttons ---
         addButton.addActionListener(e -> addStudent());
         searchButton.addActionListener(e -> searchStudent());
         updateButton.addActionListener(e -> updateStudent());
         removeButton.addActionListener(e -> removeStudent());
-        displayAllButton.addActionListener(e -> refreshStudentTable()); // This refreshes the table
+        displayAllButton.addActionListener(e -> refreshStudentTable()); 
 
-        // Add components to the mainPanel
         mainPanel.add(inputPanel, BorderLayout.NORTH);
-        mainPanel.add(buttonPanel, BorderLayout.CENTER); // Buttons in the center area
-        mainPanel.add(scrollPane, BorderLayout.SOUTH); // Table at the bottom
+        mainPanel.add(buttonPanel, BorderLayout.CENTER); 
+        mainPanel.add(scrollPane, BorderLayout.SOUTH); 
 
-        add(mainPanel); // Add the mainPanel to the JFrame
+        add(mainPanel); 
     }
 
-    // --- Button Action Methods ---
 
     private void addStudent() {
         String name = nameField.getText().trim();
@@ -104,7 +94,6 @@ public class StudentApp extends JFrame {
         String grade = gradeField.getText().trim();
         String contact = contactField.getText().trim();
 
-        // Input Validation (Requirement 6)
         if (name.isEmpty() || rollNumber.isEmpty() || grade.isEmpty() || contact.isEmpty()) {
             JOptionPane.showMessageDialog(this, "All fields are required!", "Input Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -114,7 +103,7 @@ public class StudentApp extends JFrame {
         if (sms.addStudent(newStudent)) {
             JOptionPane.showMessageDialog(this, "Student added successfully!");
             clearFields();
-            refreshStudentTable(); // <--- CRUCIAL: Refresh table after adding
+            refreshStudentTable(); 
         } else {
             JOptionPane.showMessageDialog(this, "Student with Roll Number " + rollNumber + " already exists!", "Duplicate Error", JOptionPane.ERROR_MESSAGE);
         }
@@ -147,7 +136,6 @@ public class StudentApp extends JFrame {
 
         Student studentToEdit = studentOptional.get();
 
-        // Use new dialog for editing to avoid interfering with main fields
         JTextField editNameField = new JTextField(studentToEdit.getName());
         JTextField editGradeField = new JTextField(studentToEdit.getGrade());
         JTextField editContactField = new JTextField(studentToEdit.getContactNumber());
@@ -169,7 +157,6 @@ public class StudentApp extends JFrame {
             String newGrade = editGradeField.getText().trim();
             String newContact = editContactField.getText().trim();
 
-            // Basic validation for updated fields
             if (newName.isEmpty() || newGrade.isEmpty() || newContact.isEmpty()) {
                 JOptionPane.showMessageDialog(this, "Name, Grade, and Contact cannot be empty!", "Validation Error", JOptionPane.ERROR_MESSAGE);
                 return;
@@ -177,14 +164,14 @@ public class StudentApp extends JFrame {
 
             if (sms.updateStudent(rollNumberToUpdate.trim(), newName, newGrade, newContact)) {
                 JOptionPane.showMessageDialog(this, "Student updated successfully!");
-                refreshStudentTable(); // <--- CRUCIAL: Refresh table after updating
+                refreshStudentTable(); 
             } else {
                 JOptionPane.showMessageDialog(this, "Failed to update student.", "Update Error", JOptionPane.ERROR_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Update cancelled.");
         }
-        clearFields(); // Clear main input fields
+        clearFields();
     }
 
 
@@ -195,7 +182,7 @@ public class StudentApp extends JFrame {
             if (confirm == JOptionPane.YES_OPTION) {
                 if (sms.removeStudent(rollNumber.trim())) {
                     JOptionPane.showMessageDialog(this, "Student removed successfully!");
-                    refreshStudentTable(); // <--- CRUCIAL: Refresh table after removing
+                    refreshStudentTable();
                 } else {
                     JOptionPane.showMessageDialog(this, "Student with Roll Number " + rollNumber + " not found.", "Removal Error", JOptionPane.ERROR_MESSAGE);
                 }
@@ -203,13 +190,11 @@ public class StudentApp extends JFrame {
         }
     }
 
-    // This method is called to populate/repopulate the JTable
     private void refreshStudentTable() {
-        tableModel.setRowCount(0); // Clear existing rows in the table model
-        List<Student> students = sms.getAllStudents(); // Get the current list of students
+        tableModel.setRowCount(0); 
+        List<Student> students = sms.getAllStudents(); 
 
         for (Student student : students) {
-            // Add each student as a new row to the table model
             Object[] rowData = {student.getName(), student.getRollNumber(), student.getGrade(), student.getContactNumber()};
             tableModel.addRow(rowData);
         }
@@ -223,9 +208,7 @@ public class StudentApp extends JFrame {
     }
 
     public static void main(String[] args) {
-        // Run the GUI on the Event Dispatch Thread (EDT) for thread safety
         SwingUtilities.invokeLater(() -> {
-            new StudentApp(); // The constructor now handles setVisible(true) and pack()
         });
     }
 }
