@@ -8,48 +8,41 @@ import java.util.Optional;
 
 public class StudentManagementSystem {
     private List<Student> students;
-    private static final String DATA_FILE = "students.txt"; // File to store data
+    private static final String DATA_FILE = "students.txt";
 
     public StudentManagementSystem() {
         this.students = new ArrayList<>();
-        loadStudentsFromFile(); // Load existing students when the system starts
+        loadStudentsFromFile(); 
     }
 
-    // --- Core Management Methods ---
 
-    // Add a student (Requirement 2)
     public boolean addStudent(Student student) {
-        // Check for duplicate roll number (Requirement 6 - validation)
         if (getStudentByRollNumber(student.getRollNumber()).isPresent()) {
-            return false; // Student with this roll number already exists
+            return false;
         }
         students.add(student);
-        saveStudentsToFile(); // Save immediately after adding
+        saveStudentsToFile(); 
         return true;
     }
 
-    // Remove a student (Requirement 2)
     public boolean removeStudent(String rollNumber) {
         boolean removed = students.removeIf(s -> s.getRollNumber().equalsIgnoreCase(rollNumber));
         if (removed) {
-            saveStudentsToFile(); // Save immediately after removing
+            saveStudentsToFile(); 
         }
         return removed;
     }
 
-    // Search for a student (Requirement 2)
     public Optional<Student> getStudentByRollNumber(String rollNumber) {
         return students.stream()
                 .filter(s -> s.getRollNumber().equalsIgnoreCase(rollNumber))
                 .findFirst();
     }
 
-    // Get all students (Requirement 2)
     public List<Student> getAllStudents() {
-        return new ArrayList<>(students); // Return a copy to prevent external modification
+        return new ArrayList<>(students); 
     }
 
-    // Edit student information (Requirement 5)
     public boolean updateStudent(String rollNumber, String newName, String newGrade, String newContact) {
         Optional<Student> studentOptional = getStudentByRollNumber(rollNumber);
         if (studentOptional.isPresent()) {
@@ -57,16 +50,13 @@ public class StudentManagementSystem {
             student.setName(newName);
             student.setGrade(newGrade);
             student.setContactNumber(newContact);
-            saveStudentsToFile(); // Save after updating
+            saveStudentsToFile(); 
             return true;
         }
         return false;
     }
 
 
-    // --- Data Storage Methods (Requirement 4) ---
-
-    // Load students from a file
     private void loadStudentsFromFile() {
         try (BufferedReader reader = new BufferedReader(new FileReader(DATA_FILE))) {
             String line;
@@ -79,13 +69,11 @@ public class StudentManagementSystem {
             System.out.println("Students loaded successfully from " + DATA_FILE);
         } catch (FileNotFoundException e) {
             System.out.println("Data file not found. Starting with an empty student list.");
-            // File will be created when the first student is saved
         } catch (IOException e) {
             System.err.println("Error reading student data from file: " + e.getMessage());
         }
     }
 
-    // Save students to a file
     private void saveStudentsToFile() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATA_FILE))) {
             for (Student student : students) {
